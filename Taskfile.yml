@@ -1,0 +1,104 @@
+version: "3"
+
+vars:
+  DC: docker compose
+  SRC: .
+
+tasks:
+  # ===== Docker =====
+  up:
+    desc: "Build (no cache) + up"
+    cmds:
+      - "{{.DC}} build --no-cache"
+      - "{{.DC}} up -d"
+
+  down:
+    desc: "Stop & remove containers"
+    cmds:
+      - "{{.DC}} down"
+
+  re-all:
+    desc: "Full reset: down -v, prune, rebuild, up"
+    cmds:
+      - "{{.DC}} down -v --remove-orphans"
+      - "docker system prune -af --volumes"
+      - "{{.DC}} build --no-cache"
+      - "{{.DC}} up -d --force-recreate"
+
+  re-create:
+    desc: "Up with --force-recreate"
+    cmds:
+      - "{{.DC}} up -d --force-recreate"
+
+  # ===== Ruff =====
+  ruff-check:
+    desc: "Ruff check"
+    cmds:
+      - "poetry run ruff check {{.SRC}}"
+
+  ruff-fix:
+    desc: "Ruff fix (safe)"
+    cmds:
+      - "poetry run ruff check {{.SRC}} --fix"
+
+  ruff-fix-all:
+    desc: "Ruff fix (unsafe)"
+    cmds:
+      - "poetry run ruff check {{.SRC}} --fix --unsafe-fixes"
+
+  ruff-format:
+    desc: "Ruff format"
+    cmds:
+      - "poetry run ruff format {{.SRC}}"
+
+  ruff-format-check:
+    desc: "Ruff format --check"
+    cmds:
+      - "poetry run ruff format {{.SRC}} --check"
+
+  ruff-clean:
+    desc: "Remove .ruff_cache"
+    cmds:
+      - "rm -rf .ruff_cache"
+
+  lint:
+    desc: "Ruff fix + format"
+    deps: [ruff-fix, ruff-format]
+
+# ===== Git commit with Ruff + push =====
+  commit:
+    desc: "Format with Ruff, commit with message, and push"
+    vars:
+      MSG: '{{.CLI_ARGS}}'
+    preconditions:
+      - sh: 'test -n "{{.MSG}}"'
+        msg: 'Ошибка: Не указан комментарий. Использование: task commit -- "комментарий"'
+    cmds:
+      - "poetry run ruff format ."
+      - "poetry run ruff check . --fix"
+      - "git add ."
+      - 'git commit -m "{{.MSG}}" --no-verify'
+      - "git push"
+      - 'echo "Коммит успешно выполнен и отправлен."'
+
+#============== Django=============
+  migrate:
+    cmds:
+      - poetry run python manage.py migrate
+
+  makemigrations:
+    cmds:
+      - poetry run python manage.py makemigrations
+
+  superuser:
+    cmds:
+      - poetry run python manage.py createsuperuser
+  run_django:
+    desc: "Run Django"
+    cmds:
+      - "poetry run python manage.py runserver 9010"
+
+  flower:
+    desc: "Run flower, http://localhost:5555"
+    cmds:
+      - celery -A project_school flower

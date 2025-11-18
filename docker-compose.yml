@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+
+  web:
+    build: .
+    container_name: django
+    command: bash -c "poetry run python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "9000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+
+  celery-worker:
+    build: .
+    container_name: celery_worker
+    command: celery -A project_school worker -l info --pool=solo
+    volumes:
+      - ./:/app
+    depends_on:
+      - web
+      - db
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+
+  db:
+    image: postgres:14-alpine
+    container_name: db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

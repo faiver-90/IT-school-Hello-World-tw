@@ -1,24 +1,10 @@
 version: "3.9"
 
 services:
-
-  web:
-    build: .
-    container_name: django
-    command: bash -c "sleep 3 && poetry run python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    ports:
-      - "9000:8000"
-    depends_on:
-      - db
-      - redis
-    environment:
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL_WORKER}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND_WORKER}
-
   celery-worker:
     build: .
     container_name: celery_worker
-    command: celery -A project_school worker -l info --pool=solo
+    command: celery -A project_school.celery_app worker -l info --pool=solo
     volumes:
       - ./:/app
     depends_on:

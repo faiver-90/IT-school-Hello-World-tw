@@ -5,17 +5,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('lesson', '0001_initial'),
-        ('student', '0001_initial'),
+        ("lesson", "0001_initial"),
+        ("student", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lesson',
-            name='student',
-            field=models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, to='student.student'),
+            model_name="lesson",
+            name="student",
+            field=models.ForeignKey(
+                default=2,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="student.student",
+            ),
             preserve_default=False,
         ),
     ]

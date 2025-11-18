@@ -4,21 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Lesson',
+            name="Lesson",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=100)),
-                ('start', models.DateTimeField()),
-                ('end', models.DateTimeField()),
-                ('description', models.TextField(default='')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=100)),
+                ("start", models.DateTimeField()),
+                ("end", models.DateTimeField()),
+                ("description", models.TextField(default="")),
             ],
         ),
     ]

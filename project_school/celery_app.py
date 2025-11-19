@@ -16,4 +16,3 @@ def start_inmemory_worker(sender, **kwargs):
 
     w = Worker()
     w.start()
-    print(">>> In-memory queue worker running inside Celery worker")

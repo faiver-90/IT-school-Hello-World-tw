@@ -1,9 +1,8 @@
+from src.lesson.models import Lesson
 from rest_framework import serializers
 
-from src.lesson.models import Lesson
 
-
-class LessonSerializer(serializers.ModelSerializer):
+class LessonSerializer(serializers.ModelSerializer[Lesson]):
     class Meta:
         model = Lesson
         fields = "__all__"

@@ -7,20 +7,23 @@ from .base_queue import (
     dead,
     lock,
     RETRY_LIMIT,
+    TaskItem,
 )
 from .manager import execute
 
 
 class Worker(Thread):
-    daemon = True
+    daemon: bool = True
 
-    def run(self):
+    def run(self) -> None:
         print("Worker started")
+
         while True:
-            item = main_queue.get()
-            task = item["task"]
+            item: TaskItem = main_queue.get()
+
+            task: str = item["task"]
             payload = item["payload"]
-            attempt = item["attempt"] + 1
+            attempt: int = item["attempt"] + 1
 
             with lock:
                 processing[id(item)] = item
@@ -30,6 +33,7 @@ class Worker(Thread):
 
                 with lock:
                     processing.pop(id(item), None)
+
                 print(f"[OK] {task}")
 
             except Exception as e:

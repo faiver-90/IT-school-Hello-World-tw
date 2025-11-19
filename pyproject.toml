@@ -39,3 +39,25 @@ addopts = """
     --color=yes
     --continue-on-collection-errors
 """
+[dependency-groups]
+dev = [
+    "django-stubs (>=5.2.7,<6.0.0)",
+    "djangorestframework-stubs (>=3.16.5,<4.0.0)"
+]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+follow_imports = "skip"
+disallow_untyped_calls = false
+disallow_untyped_defs = false
+check_untyped_defs = false
+warn_unused_ignores = false
+show_error_codes = true
+plugins = [
+    "mypy_django_plugin.main",
+    "mypy_drf_plugin.main",
+]
+
+[tool.django-stubs]
+django_settings_module = "project_school.settings"

@@ -4,6 +4,7 @@ services:
   celery-worker:
     build: .
     container_name: celery_worker
+    restart: always
     command: celery -A project_school.celery_app worker -l info --pool=solo
     volumes:
       - ./:/app

@@ -30,9 +30,14 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Документация School",
+    "TITLE": "School API",
     "DESCRIPTION": "Документация API",
     "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SORT_OPERATIONS": True,
+    "SORT_OPERATION_PARAMETERS": True,
+    "COMPONENT_SPLIT_PATCH": False,
+    "SCHEMA_PATH_PREFIX": "/api/v1",
 }
 
 MIDDLEWARE = [

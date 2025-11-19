@@ -2,10 +2,7 @@ from rest_framework import generics
 
 from src.lesson.models import Lesson
 from src.lesson.serializers import LessonSerializer
-from src.lesson.tasks import (
-    send_notification_start_lesson,
-    send_notification_end_lesson,
-)
+from src.lesson.services import process_lesson
 
 
 class LessonListCreateView(generics.ListCreateAPIView):
@@ -14,7 +11,7 @@ class LessonListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         lesson = serializer.save()
-        send_notification_start_lesson.delay(lesson.student_id, lesson.name)
+        process_lesson(lesson)
 
 
 class LessonRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -23,4 +20,4 @@ class LessonRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_destroy(self, serializer):
         lesson = serializer.save()
-        send_notification_end_lesson.delay(lesson.student_id, lesson.name)
+        process_lesson(lesson)

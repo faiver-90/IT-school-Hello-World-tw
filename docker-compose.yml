@@ -1,6 +1,19 @@
 version: "3.9"
 
 services:
+  web:
+    build: .
+    container_name: web
+    command: bash -c "sleep 10 && poetry run python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "9000:8000"
+    volumes:
+      - ./src:/app/src
+      - ./project_school:/app/project_school
+    depends_on:
+      - db
+      - redis
+
   celery-worker:
     build: .
     container_name: celery_worker

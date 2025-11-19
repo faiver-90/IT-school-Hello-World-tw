@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "project_school.apps.ProjectSchoolConfig",
 ]
 
 REST_FRAMEWORK = {

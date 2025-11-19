@@ -13,10 +13,10 @@ class Settings(BaseSettings):
     debug: bool = Field(True, alias="DEBUG")
 
     redis_password: str | None = Field(None, alias="REDIS_PASSWORD")
-    default_redis_url: str = Field(
-        "redis://localhost:6379/0", alias="DEFAULT_REDIS_URL"
-    )
-    redis_url: str = Field("redis://localhost:6379/0", alias="REDIS_URL")
+
+    redis_host: str = Field("localhost", alias="REDIS_HOST")
+    redis_port: int = Field(6379, alias="REDIS_PORT")
+    redis_url: str = Field(f"redis://{redis_host}:{redis_port}/0", alias="REDIS_URL")
 
     celery_broker_url: str = Field(
         "redis://localhost:6379/0", alias="CELERY_BROKER_URL"
